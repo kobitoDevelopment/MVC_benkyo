@@ -1,0 +1,36 @@
+version: "3.8" # Docker Composeファイルのバージョンを指定
+
+services: # サービスの定義
+  php: # PHPサービスの定義
+    build: # Dockerfileを使用してイメージをビルドする場合は、buildを指定
+      context: . # ビルドコンテキストを指定(カレントディレクトリを指定します)
+      dockerfile: dockerfile # 使用するDockerfileの名前を指定
+    volumes: # ボリュームのマウントを指定(ホストのディレクトリをコンテナ内にマウントする)
+      - ./src:/var/www/html # [ホストのファイルまたはディレクトリのパス]:[コンテナ内のマウントポイントのパス]
+    ports: # ポートのマッピングを指定
+      - "8080:80" # ホストの8080ポートをコンテナの80ポートにマッピング(http://localhost:8080でアクセス)
+    depends_on: # 依存関係を指定(このサービスはmysqlサービスに依存する)
+      - mysql # PHPサービスはMySQLサービスが起動していることを前提とする
+
+  mysql: # MySQLサービスの定義
+    image: mysql:latest # 使用するDockerイメージを指定(最新のMySQLイメージを使用)
+    environment: # 環境変数の設定を指定し、MySQLの初期設定を行います。
+      MYSQL_ROOT_PASSWORD: root_password # MySQLのルートユーザーのパスワードを設定
+      MYSQL_DATABASE: my_database # 初期作成するデータベースの名前を指定
+      MYSQL_USER: user # 作成するMySQLユーザーの名前を指定(phpMyAdminログイン時のユーザー名)
+      MYSQL_PASSWORD: password # 上記ユーザーのパスワードを指定
+    volumes:
+      - mysql_data:/var/lib/mysql # データボリュームをマウントする(docker compose downでDBのデータが消えないように、データの永続化を行う)
+
+  phpmyadmin: # phpMyAdminサービスの定義
+    image: phpmyadmin/phpmyadmin:latest # 使用するDockerイメージを指定(最新のphpMyAdminイメージを使用)
+    environment: # 環境変数の設定を指定
+      PMA_HOST: mysql # phpMyAdminが接続するMySQLホストを指定(mysqlサービスを指定)
+      MYSQL_ROOT_PASSWORD: root_password # phpMyAdminがMySQLに接続するためのルートパスワードを指定
+    ports: # ポートのマッピングを指定
+      - "8081:80" # ホストの8081ポートをコンテナの80ポートにマッピング(http://localhost:8081でアクセス)
+    depends_on: # 依存関係を指定(このサービスはmysqlサービスに依存)
+      - mysql # phpMyAdminサービスはMySQLサービスが起動していることを前提とする
+volumes:
+  mysql_data:
+    driver: local # ボリュームのドライバーを指定(ローカルボリュームを使用)
