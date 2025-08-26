@@ -10,8 +10,6 @@ RUN apt-get update \
     && docker-php-ext-install pdo_mysql zip \
     && a2enmod rewrite
 
-# Composerをインストール
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 # Apache設定でAllowOverrideを有効化
 RUN sed -i '/<Directory \/var\/www\/>/,/<\/Directory>/ s/AllowOverride None/AllowOverride All/' /etc/apache2/apache2.conf

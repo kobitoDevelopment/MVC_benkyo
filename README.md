@@ -70,7 +70,7 @@ src/
 ├── database/           # データベース関連
 │   ├── migrations/     # マイグレーションファイル
 │   └── migrate.php     # マイグレーション実行スクリプト
-└── composer.json       # Composer設定
+└── autoload.php        # 手作りオートローダー
 
 ```
 
@@ -83,13 +83,7 @@ docker-compose build
 docker-compose up -d
 ```
 
-### 2. Composer の依存関係をインストール
-
-```bash
-docker-compose exec php composer install
-```
-
-### 3. データベースマイグレーションの実行
+### 2. データベースマイグレーションの実行
 
 ```bash
 docker-compose exec php php /var/www/html/database/migrate.php
@@ -101,7 +95,7 @@ docker-compose exec php php /var/www/html/database/migrate.php
 - `sessions`: セッション情報（id, user_id, ip_address, user_agent, last_activity）
 - `migrations`: 実行済みマイグレーションの管理
 
-### 4. テストユーザーの作成（オプション）
+### 3. テストユーザーの作成（オプション）
 
 ```bash
 docker-compose exec php php /var/www/html/database/seed_test_user.php
@@ -171,5 +165,3 @@ docker-compose exec php php /var/www/html/database/seed_test_user.php
 - **phpMyAdmin**: http://localhost:8081
   - ユーザー名: `user`
   - パスワード: `password`
-- セッションハイジャック対策（セッション ID 再生成）
-- エラー時の入力値保持機能
