@@ -59,7 +59,7 @@ src/
 │   ├── core/            # フレームワークのコア機能
 │   │   ├── BaseController.php
 │   │   └── Database.php
-│   ├── helpers/         # 汎用ヘルパークラス（NEW!）
+│   ├── helpers/         # 汎用ヘルパークラス
 │   │   ├── CsrfHelper.php      # CSRF対策
 │   │   └── Validator.php       # バリデーション機能
 │   └── config/          # 設定ファイル
